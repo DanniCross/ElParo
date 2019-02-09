@@ -18,13 +18,13 @@ public class Isla {
     boolean pass = false;
     int dato;
     int i = 0;
-    int x ;
-    int y ;
+    int x = 500;
+    int y = 30;
     
     public Isla(){
     }
     
-    public void EntraCueva(float cant){
+    /*public void EntraCueva(float cant){
         if(this.getEntrada() == null){
             this.setEntrada(new Cueva(null, null, cant, materiales[i], 500, 30, 65, 65));
             this.i = i + 1;
@@ -35,9 +35,29 @@ public class Isla {
             Excavacion(this.getEntrada(), this.i, cant);
             this.i = i + 1;
         }
+    }*/
+    
+    public void EntraCueva(float cant)
+    {
+        Cueva nuevo = new Cueva(null, null, cant, materiales[i], this.x - 165, this.y - 135, 65, 65);
+        this.x -= 165;
+        this.y -= 135;
+        this.i = i + 1;
+        if (this.Entrada==null) 
+        {
+            this.Entrada=nuevo;
+        }else
+        {
+            if(this.i > materiales.length - 1){
+                this.i = 0;
+            }
+            this.Entrada=insertarAVL(nuevo,this.Entrada);
+            this.i = i + 1;
+        }
+    
     }
     
-    public boolean Excavacion(Cueva actual, int i, float cant){
+    /*public boolean Excavacion(Cueva actual, int i, float cant){
         if(actual == null){
             return true;
         }else{
@@ -60,7 +80,7 @@ public class Isla {
             }
         }
         return false;
-    }
+    }*/
     
     private int Fe(Cueva actual){
         if(actual == null){
@@ -105,21 +125,7 @@ public class Isla {
         }
         DFe(actual.getIzq());
         DFe(actual.getDer());
-        if(actual.getDFe() == 2){
-            if(actual.getIzq() != null && actual.getIzq().getIzq() != null && actual.getIzq().getDer() == null){
-                RotaDer(actual);
-            }else if(actual.getIzq() != null && actual.getIzq().getIzq() != null && actual.getIzq().getDer() != null){
-                RotaDobDer(actual);
-            }else if(actual.getIzq() != null && actual.getIzq().getIzq() == null && actual.getIzq().getDer() != null){
-                RotaDobDer(actual);
-            }else if(actual.getDer() != null && actual.getDer().getDer() != null && actual.getDer().getIzq() == null){
-                RotaIzq(actual);
-            }else if(actual.getDer() != null && actual.getDer().getDer() != null && actual.getDer().getIzq() != null){
-                RotaDobIzq(actual);
-            }else if(actual.getDer() != null && actual.getDer().getDer() == null && actual.getDer().getIzq() != null){
-                RotaDobIzq(actual);
-            }
-        }
+       
         return actual.getDFe();
     }
     
@@ -134,6 +140,68 @@ public class Isla {
         System.out.println(actual.getDato() + " altura: " + actual.getFe() + " Diferencia: " + actual.getDFe() + " Material: " + actual.getMaterial() + " Nivel: " + actual.getNivel());
         PreOrden(actual.getIzq());
         PreOrden(actual.getDer());
+    }
+    
+    
+    public Cueva insertarAVL(Cueva nuevo, Cueva subAr)
+    {
+        Cueva newPadre=subAr;
+        if (nuevo.getDato()<subAr.getDato())
+        {
+            if (subAr.getIzq()==null) 
+            {
+                subAr.setIzq(nuevo);
+            }else
+            {
+                subAr.setIzq(insertarAVL(nuevo,subAr.getIzq()));
+                if (Fe(subAr.getIzq())-Fe(subAr.getDer())==2) 
+                {
+                    if (nuevo.getDato()<subAr.getIzq().getDato()) 
+                    {
+                        newPadre=RotaIzq(subAr);
+                    }else
+                    {
+                        newPadre=RotaDobIzq(subAr);
+                    }
+                }
+            
+            }
+        }else if(nuevo.getDato()>subAr.getDato())
+        {
+            if (subAr.getDer()==null) 
+            {
+                subAr.setDer(nuevo);
+            }else
+            {
+                subAr.setDer(insertarAVL(nuevo,subAr.getDer()));
+                if (Fe(subAr.getDer())-Fe(subAr.getIzq())==2) 
+                {
+                    if (nuevo.getDato()>subAr.getDer().getDato()) 
+                    {
+                        newPadre=RotaDer(subAr);
+                    }else
+                    {
+                        newPadre=RotaDobDer(subAr);
+                    }
+                }
+            }
+        }else
+        {
+            System.out.println("Nodo duplicado");
+        }
+        //actualizando la altura
+        if (subAr.getIzq()==null && subAr.getDer()!=null) 
+        {
+            subAr.setFe(subAr.getDer().getFe()+1);
+        }else if(subAr.getDer()==null&& subAr.getIzq()!=null)
+        {
+            subAr.setFe(subAr.getIzq().getFe()+1);
+        }else
+        {
+            subAr.setFe(Math.max(Fe(subAr.getIzq()), Fe(subAr.getDer()))+1);
+        }
+        
+        return newPadre;
     }
     
     private Cueva RotaDer(Cueva actual){
