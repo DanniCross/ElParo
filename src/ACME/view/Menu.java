@@ -8,29 +8,37 @@ package ACME.view;
 import java.awt.*;
 import javax.swing.*;
 import ACME.*;
+import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Jose Cruz
  */
 public class Menu extends javax.swing.JFrame {
-    String direccion1 = "D:\\Archivos de la U\\Semestre IV\\Estructura de datos\\Proyecto1\\DatosCuevas.txt";
     Animacion prin;
+    Isla isla;
+    int n;
     //CuevasView cuevas = new CuevasView();
     /**
      * Creates new form Menu
      */
-    public Menu() {
-        Dimension dimPantalla = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension dimVentana = this.getSize();
-        this.setLocation((dimPantalla.width-dimVentana.width)/3, (dimPantalla.height-dimVentana.height)/(10/3));
+    public Menu(){
         initComponents();
-        transparenceButton();
-        setIconImage(new ImageIcon(getClass().getResource("/Iconos/IconAlmacen.png")).getImage());
     }
     
     public Menu(Animacion prin){
         initComponents();
+        this.Confirmacion.setVisible(false);
+        this.EliCueva.setVisible(false);
+        this.Info.setVisible(false);
         this.prin = prin;
+        Dimension dimPantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension dimVentana = this.getSize();
+        this.setLocation((dimPantalla.width-dimVentana.width)/3, (dimPantalla.height-dimVentana.height)/(10/3));
+        transparenceButton();
+        setIconImage(new ImageIcon(getClass().getResource("/Iconos/IconAlmacen.png")).getImage());
     }
     
     public void transparenceButton(){
@@ -77,6 +85,9 @@ public class Menu extends javax.swing.JFrame {
         RecBronce = new javax.swing.JLabel();
         RecPlata = new javax.swing.JLabel();
         RecMadera = new javax.swing.JLabel();
+        EliCueva = new javax.swing.JTextField();
+        Info = new javax.swing.JLabel();
+        Confirmacion = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ALMACEN");
@@ -130,6 +141,11 @@ public class Menu extends javax.swing.JFrame {
 
         Eliminar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         Eliminar.setText("Cerrar cueva");
+        Eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                EliminarMouseClicked(evt);
+            }
+        });
         Eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EliminarActionPerformed(evt);
@@ -143,10 +159,10 @@ public class Menu extends javax.swing.JFrame {
 
         Resultado1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         Resultado1.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 Resultado1AncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
@@ -164,6 +180,11 @@ public class Menu extends javax.swing.JFrame {
 
         Camion1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         Camion1.setText("Enviar camion");
+        Camion1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Camion1ActionPerformed(evt);
+            }
+        });
         getContentPane().add(Camion1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, 140, 30));
 
         TotBronce1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -182,6 +203,25 @@ public class Menu extends javax.swing.JFrame {
         RecMadera.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         getContentPane().add(RecMadera, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, 50, 30));
 
+        EliCueva.setName("CuevaAEliminar"); // NOI18N
+        EliCueva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliCuevaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(EliCueva, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 230, 110, -1));
+
+        Info.setText("Seleccione la cueva a eliminar: (1, 2, ...)");
+        getContentPane().add(Info, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 210, -1, -1));
+
+        Confirmacion.setText("OK");
+        Confirmacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfirmacionActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Confirmacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 230, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -190,8 +230,13 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_formComponentResized
 
     private void Excavar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Excavar1ActionPerformed
-        float cant = (int) (Math.random()*200)+100;
-        this.prin.Enviardato(cant);
+        int cant = (int) (Math.random()*200)+100;
+        try {
+            this.prin.Enviardato(cant);
+        } catch (Exception ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_Excavar1ActionPerformed
 
     private void Resultado1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_Resultado1AncestorAdded
@@ -199,8 +244,30 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_Resultado1AncestorAdded
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
-       
+        this.Confirmacion.setVisible(true);
+        this.EliCueva.setVisible(true);
+        this.Info.setVisible(true);
     }//GEN-LAST:event_EliminarActionPerformed
+
+    private void Camion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Camion1ActionPerformed
+        this.prin.EnviarCamion();
+    }//GEN-LAST:event_Camion1ActionPerformed
+
+    private void EliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EliminarMouseClicked
+
+    }//GEN-LAST:event_EliminarMouseClicked
+
+    private void EliCuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliCuevaActionPerformed
+        
+    }//GEN-LAST:event_EliCuevaActionPerformed
+
+    private void ConfirmacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmacionActionPerformed
+        this.n = Integer.parseInt(this.EliCueva.getText());
+        this.Confirmacion.setVisible(false);
+        this.EliCueva.setVisible(false);
+        this.Info.setVisible(false);
+        this.prin.Eliminar(n);
+    }//GEN-LAST:event_ConfirmacionActionPerformed
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -224,15 +291,22 @@ public class Menu extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new Menu().setVisible(true);
+            try {
+                new Menu().setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Bronce;
     private javax.swing.JButton Camion1;
+    private javax.swing.JButton Confirmacion;
+    private javax.swing.JTextField EliCueva;
     private javax.swing.JButton Eliminar;
     private javax.swing.JButton Excavar1;
+    private javax.swing.JLabel Info;
     private javax.swing.JButton Madera;
     private javax.swing.JButton Oro;
     private javax.swing.JButton Piedra;

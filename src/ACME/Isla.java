@@ -5,7 +5,13 @@
  */
 package ACME;
 
+import Elementos.GeneradorDOM;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.util.LinkedList;
+import javax.swing.ImageIcon;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  *
@@ -14,77 +20,85 @@ import java.awt.Graphics;
 public class Isla {
     String[] materiales = {"Oro","Bronce","Plata","Madera","Piedra"};
     private Cueva Entrada;
-    private Cueva actual;
-    boolean pass = false;
+    boolean pass = true;
+    boolean pass1 = true;
     int dato;
     int i = 0;
-    int x = 500;
-    int y = 30;
+    int n = 0;
+    int mayor = 0;
+    int BenTot = 0;
+    Cueva ant;
+    Cueva ant2;
     
     public Isla(){
     }
     
-    /*public void EntraCueva(float cant){
-        if(this.getEntrada() == null){
-            this.setEntrada(new Cueva(null, null, cant, materiales[i], 500, 30, 65, 65));
+    public void EntraCueva(int cant) throws Exception{
+        //GeneradorDOM generadorDOM = new GeneradorDOM();
+        if (this.getEntrada() == null) {
+            this.setEntrada(new Cueva(null, null, cant, materiales[i], 560, 30, 40, 40, 1));
+            //generadorDOM.agregarCuevas(cant, materiales[i]);
             this.i = i + 1;
         }else{
             if(this.i > materiales.length - 1){
                 this.i = 0;
             }
-            Excavacion(this.getEntrada(), this.i, cant);
+            Cueva nuevo = new Cueva(null, null, cant, materiales[i], 0, 0, 40, 40, 0);
+            //generadorDOM.agregarCuevas(cant, materiales[i]);
+            this.setEntrada(insertarAVL(nuevo,this.getEntrada()));
+            setPositions(this.getEntrada(), 1, null, 0);
+            Nivel(this.getEntrada(),0);
             this.i = i + 1;
         }
-    }*/
-    
-    public void EntraCueva(float cant)
-    {
-        Cueva nuevo = new Cueva(null, null, cant, materiales[i], this.x - 165, this.y - 135, 65, 65);
-        this.x -= 165;
-        this.y -= 135;
-        this.i = i + 1;
-        if (this.Entrada==null) 
-        {
-            this.Entrada=nuevo;
-        }else
-        {
-            if(this.i > materiales.length - 1){
-                this.i = 0;
-            }
-            this.Entrada=insertarAVL(nuevo,this.Entrada);
-            this.i = i + 1;
-        }
-    
     }
     
-    /*public boolean Excavacion(Cueva actual, int i, float cant){
-        if(actual == null){
-            return true;
-        }else{
-            if(cant < actual.getDato()){
-                if(Excavacion(actual.getIzq(),i, cant)){
-                    actual.setIzq(new Cueva(null, null, cant, materiales[i], actual.getX() - (actual.getAncho() + 100), actual.getY() + (actual.getAlto() + 70), actual.getAlto(), actual.getAncho()));
-                    Fe(this.getEntrada());
-                    DFe(this.getEntrada());
-                    Nivel(this.getEntrada(), 0);
-                    return false;
-                }
+     public void EntraXML(int cant, String mater){
+         if(this.getEntrada() == null){
+             this.setEntrada(new Cueva(null, null, cant, mater, 560, 30, 40, 40, 1));
+         }else{
+             Cueva nuevo = new Cueva(null, null, cant, mater, 0, 0, 40, 40, 0);
+             this.setEntrada(insertarAVL(nuevo, this.getEntrada()));
+             setPositions(this.getEntrada(), 1, null, 0);
+             Nivel(this.getEntrada(), 0);
+         }
+     }
+     
+     public Cueva insertarAVL(Cueva nuevo,Cueva subAr){
+        if (nuevo.getDato()<subAr.getDato()){
+            if (subAr.getIzq()==null) {
+                subAr.setIzq(nuevo);
             }else{
-                if(Excavacion(actual.getDer(), i, cant)){
-                    actual.setDer(new Cueva(null, null, cant, materiales[i], actual.getX() + (actual.getAncho() + 100), actual.getY() + (actual.getAlto() + 70), actual.getAlto(), actual.getAncho()));
-                    Fe(this.getEntrada());
-                    DFe(this.getEntrada());
-                    Nivel(this.getEntrada(), 0);
-                    return false;
+                subAr.setIzq(insertarAVL(nuevo,subAr.getIzq()));
+                if ((Fe(subAr.getIzq())+1)-(Fe(subAr.getDer())+1)==2){
+                    if (nuevo.getDato()<subAr.getIzq().getDato()){
+                        subAr=RotaDer(subAr);
+                    }else{
+                        subAr=RotaDobDer(subAr);
+                    }
+                }
+            
+            }
+        }else if(nuevo.getDato()>=subAr.getDato()){
+            if (subAr.getDer()==null) {
+                subAr.setDer(nuevo);
+            }else{
+                subAr.setDer(insertarAVL(nuevo,subAr.getDer()));
+                if ((Fe(subAr.getDer())+1)-(Fe(subAr.getIzq())+1)==2){
+                    if (nuevo.getDato()>subAr.getDer().getDato()){
+                        subAr=RotaIzq(subAr);
+                    }else{
+                        subAr=RotaDobIzq(subAr);
+                    }
                 }
             }
         }
-        return false;
-    }*/
+        Fe(subAr);
+        return subAr;
+    }
     
     private int Fe(Cueva actual){
         if(actual == null){
-            return 0;
+            return -1;
         }
         if(actual.getIzq() == null && actual.getDer() == null){
             actual.setFe(0);
@@ -106,29 +120,6 @@ public class Isla {
         return actual.getFe();
     }
     
-    private int DFe(Cueva actual){
-        if(actual == null){
-            return 0;
-        }
-        if(actual.getFe() == 1){
-            actual.setDFe(1);
-        }else{
-            if(actual.getIzq() == null && actual.getDer() == null){
-                actual.setDFe(0);
-            }else if(actual.getIzq() !=  null && actual.getDer() == null){
-                actual.setDFe(actual.getIzq().getFe() + 1);
-            }else if(actual.getIzq() == null && actual.getDer() != null){
-                actual.setDFe(actual.getDer().getFe() + 1);
-            }else{
-                actual.setDFe(Math.abs(actual.getIzq().getFe() - actual.getDer().getFe()));
-            }
-        }
-        DFe(actual.getIzq());
-        DFe(actual.getDer());
-       
-        return actual.getDFe();
-    }
-    
     public void Imprimir(Cueva prin){
         PreOrden(prin);
     }
@@ -142,66 +133,34 @@ public class Isla {
         PreOrden(actual.getDer());
     }
     
-    
-    public Cueva insertarAVL(Cueva nuevo, Cueva subAr)
-    {
-        Cueva newPadre=subAr;
-        if (nuevo.getDato()<subAr.getDato())
-        {
-            if (subAr.getIzq()==null) 
-            {
-                subAr.setIzq(nuevo);
-            }else
-            {
-                subAr.setIzq(insertarAVL(nuevo,subAr.getIzq()));
-                if (Fe(subAr.getIzq())-Fe(subAr.getDer())==2) 
-                {
-                    if (nuevo.getDato()<subAr.getIzq().getDato()) 
-                    {
-                        newPadre=RotaIzq(subAr);
-                    }else
-                    {
-                        newPadre=RotaDobIzq(subAr);
-                    }
-                }
-            
+    private void setPositions(Cueva actual, int i, Cueva ant, int j){
+        if(actual != null){
+            switch (i) {
+                case 1:
+                    actual.setX(560);
+                    actual.setY(30);
+                    actual.setN(1);
+                    this.n = actual.getN() + 1;
+                    ant = actual;
+                    break;
+                case 0:
+                    actual.setX(ant.getX() - (330 - j));
+                    actual.setY(ant.getY() + 100);
+                    actual.setN(this.n);
+                    this.n = actual.getN() + 1;
+                    ant = actual;
+                    break;
+                default:
+                    actual.setX(ant.getX() + (330 - j));
+                    actual.setY(ant.getY() + 100);
+                    actual.setN(this.n);
+                    this.n = actual.getN() + 1;
+                    ant = actual;
+                    break;
             }
-        }else if(nuevo.getDato()>subAr.getDato())
-        {
-            if (subAr.getDer()==null) 
-            {
-                subAr.setDer(nuevo);
-            }else
-            {
-                subAr.setDer(insertarAVL(nuevo,subAr.getDer()));
-                if (Fe(subAr.getDer())-Fe(subAr.getIzq())==2) 
-                {
-                    if (nuevo.getDato()>subAr.getDer().getDato()) 
-                    {
-                        newPadre=RotaDer(subAr);
-                    }else
-                    {
-                        newPadre=RotaDobDer(subAr);
-                    }
-                }
-            }
-        }else
-        {
-            System.out.println("Nodo duplicado");
+            setPositions(actual.getIzq(), 0, ant, j+90);
+            setPositions(actual.getDer(), 2, ant, j+90);
         }
-        //actualizando la altura
-        if (subAr.getIzq()==null && subAr.getDer()!=null) 
-        {
-            subAr.setFe(subAr.getDer().getFe()+1);
-        }else if(subAr.getDer()==null&& subAr.getIzq()!=null)
-        {
-            subAr.setFe(subAr.getIzq().getFe()+1);
-        }else
-        {
-            subAr.setFe(Math.max(Fe(subAr.getIzq()), Fe(subAr.getDer()))+1);
-        }
-        
-        return newPadre;
     }
     
     private Cueva RotaDer(Cueva actual){
@@ -211,9 +170,9 @@ public class Isla {
         
         
         actual.setFe(Fe(actual.getIzq()) - Fe(actual.getDer()));
-        DFe(actual);
+        //DFe(actual);
         aux.setFe((Fe(aux.getIzq()) - Fe(aux.getDer())) + 1);
-        DFe(aux);
+        //DFe(aux);
         return aux;
     }
     
@@ -223,15 +182,15 @@ public class Isla {
         temp.setIzq(actual);
         
         actual.setFe(Fe(actual.getIzq())-Fe(actual.getDer()));
-        DFe(actual);
+        //DFe(actual);
         temp.setFe((Fe(temp.getIzq())-Fe(temp.getDer()))+1);
-        DFe(temp);
+        //DFe(temp);
         return temp;
     }
     
     private Cueva RotaDobDer(Cueva actual){
         Cueva temp;
-        actual.setIzq(RotaDer(actual.getIzq()));
+        actual.setIzq(RotaIzq(actual.getIzq()));
         temp = RotaDer(actual);
         return temp;
     }
@@ -255,25 +214,138 @@ public class Isla {
         Nivel(actual.getIzq(), j+1);
         Nivel(actual.getDer(), j+1);
     }
-
+    
+    public void Eliminar(int n){
+        LinkedList<Cueva> Lista = new LinkedList<>();
+        this.setEntrada(Elim(this.getEntrada(), n));
+        Lista = Balance(this.getEntrada(), Lista);
+        this.setEntrada(null);
+        for(Cueva c : Lista){
+            EntraXML((int) c.getDato(), c.getMaterial());
+        }
+    }
+    
+    public LinkedList<Cueva> Balance(Cueva Padre, LinkedList<Cueva> lista){
+        if(Padre != null){
+            lista.add(Padre);
+            Balance(Padre.getIzq(), lista);
+            Balance(Padre.getDer(), lista);
+        }
+        return lista;
+    }
+    
+    public Cueva Elim(Cueva actual, int n){
+        if(actual != null){
+            if(actual.getN() == n ){
+                if(actual.getIzq() == null && actual.getDer() == null){
+                    actual = ElimHoja(actual);
+                }else if(actual.getIzq() != null && actual.getDer() != null){
+                }else{
+                    actual = EliNodo1Hijo(actual);
+                }
+            }else{
+                actual.setIzq(Elim(actual.getIzq(), n));
+                actual.setDer(Elim(actual.getDer(), n));
+            }
+        }
+        return actual;
+    }
+    
+    private Cueva ElimHoja(Cueva Padre){
+        if(Padre != null){
+            if(Padre.getIzq() == null && Padre.getDer() == null){
+                Padre = null;
+            }else{
+                Padre.setIzq(ElimHoja(Padre.getIzq()));
+                Padre.setDer(ElimHoja(Padre.getDer()));
+            }
+        }
+        return Padre;
+    }
+    //b) Eliminar nodo con un hijo.
+    private Cueva EliNodo1Hijo(Cueva Padre){ 
+        if(Padre != null){
+            if(Padre.getIzq() != null && Padre.getDer() == null || Padre.getIzq() == null && Padre.getDer() != null){
+                if(Padre.getIzq() != null){
+                    Padre = Padre.getIzq();
+                }else{
+                    Padre = Padre.getDer();
+                }
+            }else{
+                Padre.setIzq(EliNodo1Hijo(Padre.getIzq()));
+                Padre.setDer(EliNodo1Hijo(Padre.getDer()));
+            }
+        }
+        return Padre;
+    }
+    
     public Cueva getEntrada() {
-        return Entrada;
+        return this.Entrada;
     }
 
     public void setEntrada(Cueva Entrada) {
         this.Entrada = Entrada;
     }
-
-    public Cueva getActual() {
-        return actual;
+    
+    public int MasMat(Cueva Padre){
+        if(Padre != null){
+            if(Padre.getDato() > this.mayor){
+                this.mayor = (int) Padre.getDato();
+            }
+            this.mayor = MasMat(Padre.getIzq());
+            this.mayor = MasMat(Padre.getDer());
+        }
+        return this.mayor;
     }
-
-    public void setActual(Cueva actual) {
-        this.actual = actual;
+  
+    public int MasBen(Cueva Padre){
+        if(Padre != null){
+            if((Padre.getBeneficio()*(Padre.getDato()/100)) > this.BenTot){
+                this.BenTot = (int)Padre.getDato();
+            }
+            this.BenTot = MasBen(Padre.getIzq());
+            this.BenTot = MasBen(Padre.getDer());
+        }
+        return this.BenTot;
     }
     
     public void pintar(Cueva Aux, Graphics g){
         if(Aux != null){
+                g.drawString("CUEVA MAYOR GANANCIA", 1000,90);
+                g.setColor(Color.GREEN);
+                g.fillRect(1045, 95, 60, 40);
+                g.setColor(Color.black);
+                g.drawString("CUEVA MAYOR MATERIAL", 1000,30);
+                g.setColor(Color.BLUE);
+                g.fillRect(1045, 35, 60, 40);
+                g.setColor(Color.black);
+            if(Aux.getDer() != null || Aux.getIzq() != null){
+                Camino v = new Camino(Aux.getX()+12, Aux.getY() + Aux.getAlto()/2, 20, 100, "../Iconos/camino2.png");
+                g.drawImage(v.getCueva().getImage(), v.getX(), v.getY(), v.getH(), v.getA(), null);
+                if(Aux.getIzq() != null){
+                    Camino h1 = new Camino((Aux.getIzq().getX()+Aux.getAncho()/2),Aux.getIzq().getY() , Aux.getX()-Aux.getIzq().getX(), 20, "../Iconos/camino.png");
+                    g.drawImage(h1.getCueva().getImage(), h1.getX(), h1.getY(), h1.getH(), h1.getA(), null);
+                }
+                if(Aux.getDer() != null){
+                    Camino h2 = new Camino(Aux.getDer().getX()+Aux.getAncho()/2, Aux.getDer().getY(), Aux.getX()-Aux.getDer().getX(), 20, "../Iconos/camino.png");
+                    g.drawImage(h2.getCueva().getImage(), h2.getX(), h2.getY(), h2.getH(), h2.getA(), null);
+                }
+            }
+            g.drawString(Aux.getN() + ")."+Aux.getMaterial() + ": " + (int)Aux.getDato(), Aux.getX() - 10, Aux.getY() - 5);
+            if(Aux == this.ant && Aux.getDer() != null){
+                Aux.setCueva("../Iconos/Cueva.png");
+            }
+            if(Aux.getDato() == MasMat(this.getEntrada())){
+                this.ant = Aux;
+                Aux.setCueva("../Iconos/CuevaM.png");
+            }
+            if(Aux == this.ant2 && MasBen(this.getEntrada()) != Aux.getDato()){
+                Aux.setCueva("../Iconos/Cueva.png");
+            }
+            if(Aux.getDato() == MasBen(this.getEntrada())){
+                this.ant2 = Aux;
+                Aux.setCueva("../Iconos/CuevaMB.png");
+            }
             g.drawImage(Aux.getCueva().getImage(), Aux.getX(), Aux.getY(), Aux.getAncho(), Aux.getAlto(), null);
             pintar(Aux.getIzq(), g);
             pintar(Aux.getDer(), g);

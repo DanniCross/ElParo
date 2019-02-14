@@ -17,7 +17,7 @@ public class ACME {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args){
         Animacion anim = new Animacion();
         anim.setVisible(true);
         /*Scanner scan = new Scanner(System.in);

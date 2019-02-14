@@ -16,6 +16,9 @@ public class Datos {
     private int alto;
     private ImageIcon cueva;
     
+    public Datos(){
+    }
+    
     public Datos(int x, int y, int ancho, int alto, String ruta){
         this.x = x;
         this.y = y;
@@ -60,7 +63,7 @@ public class Datos {
         return cueva;
     }
 
-    public void setCueva(ImageIcon cueva) {
-        this.cueva = cueva;
+    public void setCueva(String ruta) {
+        this.cueva = new ImageIcon(getClass().getResource(ruta));
     }
 }

@@ -13,13 +13,14 @@ public class Cueva extends Datos{
     private String Material;
     private Cueva izq;
     private Cueva der;
-    private float dato;
+    private int dato;
     private int Fe;
     private int DFe;
-    private int i;
     private int nivel;
+    private int n;
+    private int Beneficio;
     
-    public Cueva(Cueva izq, Cueva der, float dato, String Material, int x, int y, int ancho, int alto){
+    public Cueva(Cueva izq, Cueva der, int dato, String Material, int x, int y, int ancho, int alto, int n){
         super(x, y, ancho, alto, "../Iconos/Cueva.png");
         this.izq = izq;
         this.der = der;
@@ -27,10 +28,29 @@ public class Cueva extends Datos{
         this.Fe = 0;
         this.DFe = 0;
         this.Material = Material;
-        this.i = i;
         this.nivel = 0;
+        this.n = n;
+        switch(Material){
+            case "Oro":
+                this.Beneficio = 100;
+                break;
+            case "Plata":
+                this.Beneficio = 80;
+                break;
+            case "Bronce":
+                this.Beneficio = 60;
+                break;
+            case "Madera":
+                this.Beneficio = 50;
+                break;
+            case "Piedra":
+                this.Beneficio = 40;
+                break;
+        }
     }
-    
+    public Cueva(){
+        super();
+    }
     public Cueva(int x, int y, int ancho, int alto){
         super(x, y, ancho, alto, "../Iconos/Cueva.png");
     }
@@ -63,7 +83,7 @@ public class Cueva extends Datos{
         return dato;
     }
 
-    public void setDato(float dato) {
+    public void setDato(int dato) {
         this.dato = dato;
     }
 
@@ -89,5 +109,17 @@ public class Cueva extends Datos{
 
     public void setNivel(int nivel) {
         this.nivel = nivel;
+    }
+
+    public int getN() {
+        return n;
+    }
+
+    public void setN(int n) {
+        this.n = n;
+    }
+
+    public int getBeneficio() {
+        return Beneficio;
     }
 }
