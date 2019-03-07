@@ -40,7 +40,7 @@ public class GeneradorDOM {
         try {
             DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
             DocumentBuilder build = fact.newDocumentBuilder();
-            Document doc = build.parse(new File("/home/josec/Documentos/Netbeans Projects/ElParo/Cuevas.xml"));
+            Document doc = build.parse(new File("/run/media/josec/DE8C-86ED/Documentos/Netbeans Projects/ElParo/Cuevas.xml"));
             
             doc.getDocumentElement().normalize();
             Node nodoRaiz = doc.getDocumentElement();

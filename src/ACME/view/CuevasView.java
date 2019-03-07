@@ -49,7 +49,7 @@ public class CuevasView extends javax.swing.JPanel{
     
         
         
-        File file = new File("/home/josec/Documentos/Netbeans Projects/ElParo/Cuevas.xml");
+        File file = new File("/run/media/josec/DE8C-86ED/Documentos/Netbeans Projects/ElParo/Cuevas.xml");
         LeerCuevas handler = new LeerCuevas();
         saxP.parse(file, handler);
         
