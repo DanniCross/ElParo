@@ -49,17 +49,17 @@ public class CuevasView extends javax.swing.JPanel{
     
         
         
-        File file = new File("/run/media/josec/DE8C-86ED/Documentos/Netbeans Projects/ElParo/Cuevas.xml");
+        File file = new File("/run/media/josec/Jose Cruz/Documentos/Netbeans Projects/ElParo/ElParo/Cuevas.xml");
         LeerCuevas handler = new LeerCuevas();
         saxP.parse(file, handler);
         
         LinkedList<Cueva> c = handler.getCuevas();
         c.forEach((cu) -> {
-            this.cuevas.EntraXML((int) cu.getDato(), cu.getMaterial());
+            this.cuevas.EntraXML((int)cu.getDato(), cu.getMaterial());
         });
     }
     
-    public void Recibirdato(int cant){
+    public void Recibirdato(float cant){
         try {
             this.cuevas.EntraCueva(cant);
         } catch (Exception ex) {

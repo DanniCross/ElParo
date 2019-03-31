@@ -13,14 +13,17 @@ public class Cueva extends Datos{
     private String Material;
     private Cueva izq;
     private Cueva der;
-    private int dato;
+    private float dato;
     private int Fe;
     private int DFe;
     private int nivel;
     private int n;
     private int Beneficio;
+    private boolean rec = false;
+    private boolean passizq = false;
+    private boolean passder = false;
     
-    public Cueva(Cueva izq, Cueva der, int dato, String Material, int x, int y, int ancho, int alto, int n){
+    public Cueva(Cueva izq, Cueva der, float dato, String Material, int x, int y, int ancho, int alto, int n){
         super(x, y, ancho, alto, "../Iconos/Cueva.png");
         this.izq = izq;
         this.der = der;
@@ -83,7 +86,7 @@ public class Cueva extends Datos{
         return dato;
     }
 
-    public void setDato(int dato) {
+    public void setDato(float dato) {
         this.dato = dato;
     }
 
@@ -122,4 +125,40 @@ public class Cueva extends Datos{
     public int getBeneficio() {
         return Beneficio;
     }
+
+    public boolean getRec() {
+        return rec;
+    }
+
+    public void setRec(boolean rec) {
+        this.rec = rec;
+    }
+
+    public boolean isPassizq() {
+        return passizq;
+    }
+
+    public void setPassizq(boolean passizq) {
+        this.passizq = passizq;
+    }
+
+    public boolean isPassder() {
+        return passder;
+    }
+
+    public void setPassder(boolean passder) {
+        this.passder = passder;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

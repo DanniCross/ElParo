@@ -28,7 +28,7 @@ public class LeerCuevas extends DefaultHandler{
     public void endElement(String uri, String localName, String qName) throws SAXException {
         switch(qName){
             case "Cantidad":
-                cueva.setDato(Integer.parseInt(buffer.toString()));
+                cueva.setDato(Float.parseFloat(buffer.toString()));
                 break;
             case "Material":
                 cueva.setMaterial(buffer.toString());

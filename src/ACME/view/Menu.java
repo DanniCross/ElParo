@@ -250,7 +250,11 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void Camion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Camion1ActionPerformed
-        this.prin.EnviarCamion();
+        try {
+            this.prin.EnviarCamion();
+        } catch (Exception ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_Camion1ActionPerformed
 
     private void EliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EliminarMouseClicked

@@ -100,12 +100,12 @@ public class Animacion extends javax.swing.JFrame {
         this.menu.setVisible(true);
     }//GEN-LAST:event_AlmacenActionPerformed
     
-    public void Enviardato(int dato) throws Exception{
+    public void Enviardato(float dato) throws Exception{
         this.cuevasView1.Recibirdato(dato);
     }
     
-    public void EnviarCamion(){
-        camiones.add(new Camion(0,30, 60, 70));
+    public void EnviarCamion() throws Exception{
+        camiones.add(new Camion(0,10, 60, 70, this.isla));
     }
     
     public void Eliminar(int n){

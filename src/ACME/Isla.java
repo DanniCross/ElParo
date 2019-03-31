@@ -5,13 +5,10 @@
  */
 package ACME;
 
-import Elementos.GeneradorDOM;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.util.LinkedList;
-import javax.swing.ImageIcon;
-import javax.xml.parsers.ParserConfigurationException;
+
 
 /**
  *
@@ -27,13 +24,14 @@ public class Isla {
     int n = 0;
     int mayor = 0;
     int BenTot = 0;
+    LinkedList<Cueva> cuevas = new LinkedList<>();
     Cueva ant;
     Cueva ant2;
     
     public Isla(){
     }
     
-    public void EntraCueva(int cant) throws Exception{
+    public void EntraCueva(float cant) throws Exception{
         //GeneradorDOM generadorDOM = new GeneradorDOM();
         if (this.getEntrada() == null) {
             this.setEntrada(new Cueva(null, null, cant, materiales[i], 560, 30, 40, 40, 1));
@@ -167,7 +165,6 @@ public class Isla {
         Cueva aux = actual.getIzq();
         actual.setIzq(aux.getDer());
         aux.setDer(actual);
-        
         
         actual.setFe(Fe(actual.getIzq()) - Fe(actual.getDer()));
         //DFe(actual);
@@ -309,6 +306,15 @@ public class Isla {
         return this.BenTot;
     }
     
+    public LinkedList<Cueva> getCuevas(Cueva Padre){
+        if(Padre != null){
+            cuevas.add(Padre);
+            getCuevas(Padre.getIzq());
+            getCuevas(Padre.getDer());
+        }
+        return cuevas;
+    }
+    
     public void pintar(Cueva Aux, Graphics g){
         if(Aux != null){
                 g.drawString("CUEVA MAYOR GANANCIA", 1000,90);
@@ -352,3 +358,15 @@ public class Isla {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
